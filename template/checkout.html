@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - FoodieDelight</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons (optional) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .card {
+            margin-top: 50px;
+            border: none;
+        }
+
+        .card-header {
+            border-bottom: 2px solid #ffffff;
+        }
+
+        .card-footer {
+            background-color: #f8f9fa;
+        }
+
+        .btn-lg {
+            font-size: 1.2rem;
+        }
+
+        .text-success {
+            color: #28a745 !important;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .thead-light th {
+            background-color: #e9ecef;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0">Checkout</h3>
+                        </div>
+                        <div>
+                            <h4 class="mb-0 font-weight-bold">FoodieDelight</h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="text-center mb-4">Order Summary</h5>
+                        <table class="table table-bordered">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Price (Rs.)</th>
+                                    <th>Subtotal (Rs.)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cart_items %}
+                                <tr>
+                                    <td>{{ item.dish.name }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>{{ item.dish.discounted_price }}</td>
+                                    <td>{{ item.quantity|floatformat:2|add:item.dish.discounted_price }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <hr>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="font-weight-bold">Total:</h5>
+                            <h5 class="text-success">Rs. {{ total_price|default:0 }}</h5>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center">
+                        <form
+                            action="https://sandbox.jazzcash.com.pk/CustomerPortal/transactionmanagement/merchantform/"
+                            method="POST">
+                            {% csrf_token %}
+                            <!-- Pass the necessary payment data -->
+                            <input type="hidden" name="pp_Version" value="1.0">
+                            <input type="hidden" name="pp_TxnType" value="N">
+                            <input type="hidden" name="pp_Language" value="EN">
+                            <input type="hidden" name="pp_MerchantID" value="{{ jazzcash_payment_data.merchant_id }}">
+                            <input type="hidden" name="pp_SubMerchantID" value="">
+                            <input type="hidden" name="pp_Password" value="{{ jazzcash_payment_data.password }}">
+                            <input type="hidden" name="pp_BankID" value="TBANK">
+                            <input type="hidden" name="pp_ProductID" value="RETL">
+                            <input type="hidden" name="pp_TxnRefNo" value="{{ jazzcash_payment_data.txn_ref_no }}">
+                            <input type="hidden" name="pp_Amount" value="{{ total_price|default:0 }}">
+                            <input type="hidden" name="pp_TxnCurrency" value="PKR">
+                            <input type="hidden" name="pp_TxnDateTime"
+                                value="{{ jazzcash_payment_data.txn_date_time }}">
+                            <input type="hidden" name="pp_BillReference" value="{{ jazzcash_payment_data.bill_ref }}">
+                            <input type="hidden" name="pp_Description" value="Payment for order">
+                            <input type="hidden" name="pp_TxnExpiryDateTime"
+                                value="{{ jazzcash_payment_data.txn_expiry_date_time }}">
+                            <input type="hidden" name="pp_ReturnURL" value="{{ jazzcash_payment_data.return_url }}">
+                            <input type="hidden" name="pp_SecureHash" value="{{ jazzcash_payment_data.secure_hash }}">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-credit-card"></i> Pay with JazzCash
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- Page Header Start -->
+<div class="page-header mb-0">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2>{{ dish.name }}</h2>
+            </div>
+            <div class="col-12">
+                <a href="/dishes/?q={{ dish.category.id }}">{{ dish.category.name }}</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<!-- Food Start -->
+<div class="food mt-0">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6 mx-auto">
+                <div class="food-item">
+                    <!-- Dish Image -->
+                    <a href="/media/{{ dish.image }}" target="_blank">
+                        <img src="/media/{{ dish.image }}" style="height: 300px; width: 100%;" alt="{{ dish.name }}">
+                    </a>
+
+                    <!-- Dish Name and Description -->
+                    <h2 class="my-3">{{ dish.name }}</h2>
+                    <p>{{ dish.details }}</p>
+
+                    <!-- Price -->
+                    <h4 class="menu-text" style="font-weight: normal;">
+                        {% if dish.price != dish.discounted_price %}
+                        <span class="text-muted text-decoration-line-through">Rs.{{ dish.price }}</span>
+                        {% endif %}
+                        <strong>Rs. {{ dish.discounted_price }}</strong>
+                    </h4>
+
+                    <!-- Ingredients List -->
+                    <p>
+                        <script>
+                            var ingredients = '{{ dish.ingredients }}'.split(',');
+                            ingredients.forEach(function (ingredient) {
+                                document.write("<span class='btn btn-sm mr-1 mb-1 btn-outline-success'>" + ingredient.trim() + "</span>");
+                            });
+                        </script>
+                    </p>
+
+                    <!-- Availability & Actions -->
+                    {% if dish.is_available %}
+                    {% if user.is_superuser or user.is_staff %}
+                    <p>Admin Mode: You can manage this dish.</p>
+                    {% elif user.is_active %}
+                    <!-- Add to Cart Button -->
+                    <a href="{% url 'add_to_cart' dish.id %}" class="btn btn-primary mt-3">Add to Cart</a>
+                    {% else %}
+                    <p><a href="{% url 'login' %}">Login to Buy</a></p>
+                    {% endif %}
+                    {% else %}
+                    <p class="text-danger">Please Login to continue!</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Food End -->
+
+<!-- Success Message Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Success</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {% if messages %}
+                {% for message in messages %}
+                <p>{{ message }}</p>
+                {% endfor %}
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Show the modal if there's a success message
+    document.addEventListener('DOMContentLoaded', function () {
+        var hasMessages = "{{ messages|length|yesno:'true,false' }}"; // Check if messages exist as a string
+        if (hasMessages === "true") { // Compare as string
+            var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+
+
+<!-- Page Header Start -->
+<div class="page-header mb-0">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2>About Us</h2>
+            </div>
+            <div class="col-12">
+                <a href="">Home</a>
+                <a href="">About Us</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page Header End -->
+
+
+<!-- Food Start -->
+        <div class="food">
+            <div class="container">
+                <div class="row align-items-center">
+                    {% for cat in categories %}
+                    <div class="col-md-4">
+                        <div class="food-item">
+                            <i class="{{cat.icon}}"></i>
+                            <h2>{{cat.name}}</h2>
+                            <p>
+                                {{cat.description}}
+                            </p>
+                            <a href="{% url 'all_dishes' %}?q={{cat.id}}">View Menu</a>
+                        </div>
+        
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+<!-- Food End -->
+
+
+<!-- About Start -->
+<div class="about">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="about-img">
+                    <img src="{% static 'img/thumbnail.jpeg' %}" alt="Image">
+                    <button type="button" class="btn-play" data-toggle="modal" data-src="F:\Sem 3\Python\Areeeeeeeej\foodZone\static\img\Foodie Delights Introduction.mp4" data-target="#videoModal">
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="about-content">
+                    <div class="section-header">
+                        <p>About Us</p>
+                        <h2>Cooking Since 1990</h2>
+                    </div>
+                    <div class="about-text">
+                        <p>
+                        Welcome to Foodie Delight, your go-to destination for delicious, freshly-prepared meals delivered straight to your door.
+                        At Foodie Delight, we believe that food is more than just sustenance—it’s an experience. Our goal is to bring that
+                        experience right to your doorstep, offering a wide variety of mouth-watering dishes to satisfy every craving.
+                        </p>
+                        <p>
+                        At Foodie Delight, we’re passionate about food, quality service, and making sure every meal exceeds your expectations.
+                        Join our food-loving community today and experience the joy of delicious food, delivered right to you.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- About End -->
+
+
+<!-- Video Modal Start-->
+<div class="modal fade" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>        
+                <!-- 16:9 aspect ratio -->
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embed-responsive-item" src="" id="video"  allowscriptaccess="always" allow="autoplay"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+<!-- Video Modal End -->
+{% endblock %}
